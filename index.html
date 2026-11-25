@@ -1,0 +1,1816 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KANYIN HYDROPOWER</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #000000;
+    color: white;
+}
+
+/* LOGIN */
+
+#login {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #dff6ff, #8bd5ff);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.brand {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.brand h1 {
+    color: #0720ff;
+    font-size: 48px;
+    letter-spacing: 8px;
+    animation: slideIn 1.8s ease;
+}
+
+.brand h2 {
+    color: #0841fd;
+    letter-spacing: 5px;
+    margin-top: 8px;
+    animation: slideIn 2.5s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100vw); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.login-box {
+    width: 320px;
+    padding: 30px;
+    border: 3px solid #0e3446;
+    background: rgb(253, 255, 254);
+    border-radius: 18px;
+    text-align: center;
+    animation: slideIn 3.5s ease;
+}
+
+.login-box h3 {
+    color: #1000f5;
+    margin-bottom: 20px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 13px;
+    border: 2px solid #ff0606;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #111;
+    background: white;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 13px;
+    border: 3px solid #3c06ff;
+    background: #000000;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#error {
+    color: red;
+    margin-top: 12px;
+    overflow-wrap: anywhere;
+}
+
+/* DASHBOARD */
+
+#dashboard {
+    display: none;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    color: #00d5ff;
+    text-shadow: 0 0 12px #00aaff;
+}
+
+.header button {
+    background: #e63946;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+#connectionStatus {
+    display: inline-block;
+    color: #39ff14;
+    font-size: 13px;
+    margin: 8px 0;
+}
+
+/* PANELS */
+
+.panel {
+    background: #101a29;
+    border: 1px solid #1e3b55;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0,180,255,.08);
+}
+
+.graph-title {
+    text-align: center;
+    color: #00d5ff;
+    font-size: 25px;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    text-shadow: 0 0 12px #00aaff;
+}
+
+.panel h2:not(.graph-title) {
+    color: #00d5ff;
+    margin-bottom: 18px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+select, input, textarea {
+    background: #07111e;
+    color: white;
+    border: 1px solid #31516d;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+select:disabled {
+    opacity: .5;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 430px;
+}
+
+#periodInfo {
+    color: #9eb6ca;
+    margin-top: 12px;
+}
+
+/* TABLE */
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th, td {
+    border: 1px solid #29445c;
+    padding: 11px;
+    text-align: center;
+}
+
+th {
+    background: #12304a;
+    color: #00d5ff;
+}
+
+td {
+    background: #0a1420;
+}
+
+.remark-cell {
+    text-align: left;
+    white-space: pre-wrap;
+    min-width: 180px;
+    max-width: 300px;
+    overflow-wrap: anywhere;
+    color: #d8e8f5;
+}
+
+.action-btn {
+    border: none;
+    padding: 7px 10px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin: 3px;
+}
+
+.edit-btn { background: #087db9; }
+.delete-btn { background: #d62828; }
+.note-btn { background: #818f00; }
+
+/* ADMIN */
+
+.admin-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.admin-form input {
+    width: 100%;
+}
+
+.admin-form textarea {
+    width: 100%;
+    min-height: 75px;
+    resize: vertical;
+    grid-column: 1 / -1;
+}
+
+.main-btn {
+    background: #1900a8;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.backup-btn {
+    background: #087d55;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+#note {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    margin: 10px 0;
+}
+
+.note-display {
+    white-space: pre-wrap;
+    line-height: 1.7;
+    color: #d8e8f5;
+    overflow-wrap: anywhere;
+}
+
+#backupPanel p {
+    color: #b8cadb;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+@media(max-width:600px) {
+    .brand h1 { font-size: 34px; }
+    #dashboard { padding: 10px; }
+    .chart-container { height: 350px; }
+    .graph-title { font-size: 19px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<section id="login">
+
+    <div class="brand">
+        <h1>KANYIN</h1>
+        <h2>HYDROPOWER</h2>
+    </div>
+
+    <div class="login-box">
+        <h3>LOGIN SYSTEM</h3>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Email Address"
+            autocomplete="username"
+        >
+
+        <input
+            type="password"
+            id="pass"
+            placeholder="Password"
+            autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') login()"
+        >
+
+        <button onclick="login()">LOGIN</button>
+
+        <p id="error"></p>
+    </div>
+
+</section>
+
+<!-- DASHBOARD -->
+
+<section id="dashboard">
+
+    <div class="header">
+        <div>
+            <h1>KANYIN HYDROPOWER</h1>
+            <span id="connectionStatus">Connecting...</span>
+        </div>
+
+        <div>
+            <span id="role"></span>
+            <button onclick="logout()">LOGOUT</button>
+        </div>
+    </div>
+
+    <!-- GRAPH -->
+
+    <div class="panel">
+
+        <h2 class="graph-title">KANYIN HYDROPOWER</h2>
+
+        <div class="filters">
+
+            <label>PERIOD</label>
+
+            <select id="period" onchange="updateGraph()">
+                <option value="daily">DAILY</option>
+                <option value="monthly">MONTHLY</option>
+                <option value="yearly">YEARLY</option>
+            </select>
+
+            <label>YEAR</label>
+
+            <select id="yearSelect" onchange="updateGraph()"></select>
+
+            <label>MONTH</label>
+
+            <select id="monthSelect" onchange="updateGraph()">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+
+        </div>
+
+        <div class="chart-container">
+            <canvas id="graph"></canvas>
+        </div>
+
+        <p id="periodInfo"></p>
+
+    </div>
+
+    <!-- DATA TABLE -->
+
+    <div class="panel">
+
+        <h2>DAILY RECORDS & REMARKS</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>DATE</th>
+                        <th>MWh</th>
+                        <th>Water Level (m)</th>
+                        <th>DAILY REMARKS</th>
+                        <th id="actionHeading">ACTION</th>
+                    </tr>
+                </thead>
+
+                <tbody id="records"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ADMIN DATA ENTRY -->
+
+    <div class="panel" id="adminPanel">
+
+        <h2>ADMIN - DATA ENTRY</h2>
+
+        <div class="admin-form">
+
+            <input type="date" id="date">
+
+            <input
+                type="number"
+                id="mwh"
+                placeholder="MWh"
+                step="any"
+            >
+
+            <input
+                type="number"
+                id="water"
+                placeholder="Water Level (m)"
+                step="any"
+            >
+
+            <textarea
+                id="dailyRemark"
+                placeholder="Write daily remark for this date..."
+            ></textarea>
+
+            <button class="main-btn" onclick="saveData()">
+                SAVE DATA & REMARK
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- GENERAL REMARKS -->
+
+    <div class="panel">
+
+        <h2>GENERAL REMARKS / NOTES</h2>
+
+        <div id="noteView" class="note-display"></div>
+
+        <div id="noteEditor">
+
+            <textarea
+                id="note"
+                placeholder="Write general remarks here..."
+            ></textarea>
+
+            <button class="main-btn" onclick="saveNote()">
+                SAVE REMARKS
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- BACKUP -->
+
+    <div class="panel" id="backupPanel">
+
+        <h2>BACKUP & DATA MANAGEMENT</h2>
+
+        <p>
+            Export your Firebase records to a JSON backup file.
+            You can also import a previous backup or migrate
+            records saved in this browser.
+        </p>
+
+        <button class="backup-btn" onclick="exportBackup()">
+            EXPORT BACKUP
+        </button>
+
+        <button class="backup-btn" onclick="document.getElementById('backupFile').click()">
+            IMPORT BACKUP FILE
+        </button>
+
+        <input
+            type="file"
+            id="backupFile"
+            accept=".json,application/json"
+            style="display:none"
+            onchange="importBackup(event)"
+        >
+
+        <button class="backup-btn" onclick="importLocalData()">
+            IMPORT OLD BROWSER DATA
+        </button>
+
+        <p id="backupStatus"></p>
+
+    </div>
+
+</section>
+
+<!-- FIREBASE + APP -->
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    doc,
+    setDoc,
+    deleteDoc,
+    onSnapshot,
+    getDocs,
+    getDoc,
+    writeBatch
+}
+from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBS_ALX1qzL7xMp5DxlvDa0_F3bsFnTbz0",
+    authDomain: "kanyin-hydropower-graph.firebaseapp.com",
+    projectId: "kanyin-hydropower-graph",
+    storageBucket: "kanyin-hydropower-graph.firebasestorage.app",
+    messagingSenderId: "839344094029",
+    appId: "1:839344094029:web:b14968b842050bee059504",
+    measurementId: "G-HJBFR5HJED"
+};
+
+/* ADMIN UID */
+
+const ADMIN_UID = "aUeVRBEkBYPiR8LNn2kwqSPOk993";
+
+/* INITIALIZE */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+/* APP VARIABLES */
+
+let currentRole = "";
+let currentUser = null;
+
+let data = [];
+let savedNote = "";
+
+let chart = null;
+
+let stopRecordsListener = null;
+let stopNoteListener = null;
+
+/* ELEMENT HELPER */
+
+const el = id => document.getElementById(id);
+
+/* ERROR MESSAGE */
+
+function showError(message) {
+    el("error").textContent = message;
+}
+
+/* LOGIN */
+
+async function login() {
+
+    const email = el("email").value.trim();
+    const password = el("pass").value;
+
+    if (!email || !password) {
+        showError("Please enter Email and Password.");
+        return;
+    }
+
+    showError("Logging in...");
+
+    try {
+
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showError(
+            "Login failed: " + error.message
+        );
+
+    }
+
+}
+
+/* LOGOUT */
+
+async function logout() {
+
+    try {
+        await signOut(auth);
+    } catch (error) {
+        alert(error.message);
+    }
+
+}
+
+/* AUTH STATE */
+
+onAuthStateChanged(auth, user => {
+
+    if (user) {
+
+        currentUser = user;
+
+        currentRole =
+            user.uid === ADMIN_UID
+            ? "ADMIN"
+            : "VIEWER";
+
+        el("login").style.display = "none";
+        el("dashboard").style.display = "block";
+
+        el("role").textContent = " | " + currentRole;
+
+        el("adminPanel").style.display =
+            currentRole === "ADMIN" ? "block" : "none";
+
+        el("noteEditor").style.display =
+            currentRole === "ADMIN" ? "block" : "none";
+
+        el("backupPanel").style.display =
+            currentRole === "ADMIN" ? "block" : "none";
+
+        el("actionHeading").style.display =
+            currentRole === "ADMIN" ? "table-cell" : "none";
+
+        el("connectionStatus").textContent =
+            "ONLINE - Connecting to database...";
+
+        startDatabaseListeners();
+
+    } else {
+
+        currentUser = null;
+        currentRole = "";
+
+        stopDatabaseListeners();
+
+        el("dashboard").style.display = "none";
+        el("login").style.display = "flex";
+
+        el("pass").value = "";
+        showError("");
+
+    }
+
+});
+
+/* STOP LISTENERS */
+
+function stopDatabaseListeners() {
+
+    if (stopRecordsListener) {
+        stopRecordsListener();
+        stopRecordsListener = null;
+    }
+
+    if (stopNoteListener) {
+        stopNoteListener();
+        stopNoteListener = null;
+    }
+
+}
+
+/* LIVE DATABASE LISTENERS */
+
+function startDatabaseListeners() {
+
+    stopDatabaseListeners();
+
+    stopRecordsListener = onSnapshot(
+        collection(db, "records"),
+
+        snapshot => {
+
+            data = snapshot.docs.map(document => ({
+                ...document.data(),
+                date: document.id
+            }));
+
+            data.sort((a, b) =>
+                a.date.localeCompare(b.date)
+            );
+
+            localStorage.setItem(
+                "kanyinData",
+                JSON.stringify(data)
+            );
+
+            setupFilters();
+            renderTable();
+            updateGraph();
+
+            el("connectionStatus").textContent =
+                "ONLINE - Live database connected";
+
+        },
+
+        error => {
+
+            console.error(error);
+
+            el("connectionStatus").textContent =
+                "DATABASE ERROR: " + error.message;
+
+        }
+    );
+
+    stopNoteListener = onSnapshot(
+        doc(db, "settings", "generalNote"),
+
+        snapshot => {
+
+            savedNote = snapshot.exists()
+                ? (snapshot.data().text || "")
+                : "";
+
+            localStorage.setItem(
+                "kanyinNote",
+                savedNote
+            );
+
+            renderNote();
+
+        },
+
+        error => {
+
+            console.error(error);
+
+        }
+    );
+
+}
+
+/* FILTERS */
+
+function setupFilters() {
+
+    const yearSelect = el("yearSelect");
+
+    const currentDate = new Date();
+
+    const years = new Set(
+        data.map(item =>
+            Number(String(item.date).substring(0, 4))
+        )
+    );
+
+    years.add(currentDate.getFullYear());
+
+    const previousYear = yearSelect.value;
+
+    yearSelect.innerHTML = "";
+
+    [...years]
+        .sort((a, b) => b - a)
+        .forEach(year => {
+
+            const option = document.createElement("option");
+
+            option.value = year;
+            option.textContent = year;
+
+            yearSelect.appendChild(option);
+
+        });
+
+    if ([...years].map(String).includes(previousYear)) {
+        yearSelect.value = previousYear;
+    } else {
+        yearSelect.value = currentDate.getFullYear();
+    }
+
+    if (!el("monthSelect").value) {
+        el("monthSelect").value =
+            currentDate.getMonth() + 1;
+    }
+
+}
+
+/* SAVE DATA */
+
+async function saveData() {
+
+    if (currentRole !== "ADMIN") return;
+
+    const date = el("date").value;
+
+    const mwhInput = el("mwh").value;
+    const waterInput = el("water").value;
+
+    const dailyRemark = el("dailyRemark").value;
+
+    const mwh = Number(mwhInput);
+    const water = Number(waterInput);
+
+    if (
+        !date ||
+        mwhInput === "" ||
+        waterInput === "" ||
+        !Number.isFinite(mwh) ||
+        !Number.isFinite(water)
+    ) {
+
+        alert("Please fill in Date, MWh and Water Level!");
+        return;
+
+    }
+
+    if (mwh < 0 || water < 0) {
+
+        alert("Values cannot be negative!");
+        return;
+
+    }
+
+    const oldRecord = data.find(
+        item => item.date === date
+    );
+
+    const record = {
+
+        date: date,
+
+        mwh: mwh,
+
+        water: water,
+
+        remark:
+            dailyRemark.trim() ||
+            (oldRecord ? oldRecord.remark || "" : "")
+
+    };
+
+    try {
+
+        await setDoc(
+            doc(db, "records", date),
+            record
+        );
+
+        el("date").value = "";
+        el("mwh").value = "";
+        el("water").value = "";
+        el("dailyRemark").value = "";
+
+        alert("Data Saved to Firebase!");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Save failed: " + error.message);
+
+    }
+
+}
+
+/* EDIT DATA */
+
+function editData(date) {
+
+    if (currentRole !== "ADMIN") return;
+
+    const item = data.find(
+        record => record.date === date
+    );
+
+    if (!item) return;
+
+    el("date").value = item.date;
+    el("mwh").value = item.mwh;
+    el("water").value = item.water;
+    el("dailyRemark").value = item.remark || "";
+
+    el("adminPanel").scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+/* EDIT DAILY REMARK */
+
+async function editDailyRemark(date) {
+
+    if (currentRole !== "ADMIN") return;
+
+    const item = data.find(
+        record => record.date === date
+    );
+
+    if (!item) return;
+
+    const newRemark = prompt(
+        "Write or edit remark for " + date,
+        item.remark || ""
+    );
+
+    if (newRemark === null) return;
+
+    try {
+
+        await setDoc(
+            doc(db, "records", date),
+            {
+                ...item,
+                remark: newRemark.trim()
+            }
+        );
+
+        alert("Daily Remark Updated!");
+
+    } catch (error) {
+
+        alert("Update failed: " + error.message);
+
+    }
+
+}
+
+/* DELETE DAILY REMARK */
+
+async function deleteDailyRemark(date) {
+
+    if (currentRole !== "ADMIN") return;
+
+    const item = data.find(
+        record => record.date === date
+    );
+
+    if (!item || !item.remark) return;
+
+    if (!confirm("Delete remark for " + date + "?")) {
+        return;
+    }
+
+    try {
+
+        await setDoc(
+            doc(db, "records", date),
+            {
+                ...item,
+                remark: ""
+            }
+        );
+
+    } catch (error) {
+
+        alert("Delete failed: " + error.message);
+
+    }
+
+}
+
+/* DELETE DATA */
+
+async function deleteData(date) {
+
+    if (currentRole !== "ADMIN") return;
+
+    if (!confirm(
+        "Are you sure you want to delete this record?"
+    )) {
+        return;
+    }
+
+    try {
+
+        await deleteDoc(
+            doc(db, "records", date)
+        );
+
+    } catch (error) {
+
+        alert("Delete failed: " + error.message);
+
+    }
+
+}
+
+/* TABLE */
+
+function renderTable() {
+
+    const tbody = el("records");
+
+    tbody.innerHTML = "";
+
+    [...data]
+        .sort((a, b) =>
+            b.date.localeCompare(a.date)
+        )
+        .forEach(item => {
+
+            const tr = document.createElement("tr");
+
+            const dateCell = document.createElement("td");
+            dateCell.textContent = item.date;
+
+            const mwhCell = document.createElement("td");
+            mwhCell.textContent =
+                Number(item.mwh).toLocaleString();
+
+            const waterCell = document.createElement("td");
+            waterCell.textContent = item.water;
+
+            const remarkCell = document.createElement("td");
+            remarkCell.className = "remark-cell";
+            remarkCell.textContent = item.remark || "—";
+
+            tr.appendChild(dateCell);
+            tr.appendChild(mwhCell);
+            tr.appendChild(waterCell);
+            tr.appendChild(remarkCell);
+
+            if (currentRole === "ADMIN") {
+
+                const actionCell =
+                    document.createElement("td");
+
+                const buttons = [
+
+                    {
+                        text: "NOTE",
+                        className: "note-btn",
+                        action: () => editDailyRemark(item.date)
+                    },
+
+                    {
+                        text: "EDIT",
+                        className: "edit-btn",
+                        action: () => editData(item.date)
+                    },
+
+                    {
+                        text: "DEL NOTE",
+                        className: "delete-btn",
+                        action: () => deleteDailyRemark(item.date)
+                    },
+
+                    {
+                        text: "DELETE DATA",
+                        className: "delete-btn",
+                        action: () => deleteData(item.date)
+                    }
+
+                ];
+
+                buttons.forEach(buttonInfo => {
+
+                    const button =
+                        document.createElement("button");
+
+                    button.className =
+                        "action-btn " + buttonInfo.className;
+
+                    button.textContent = buttonInfo.text;
+
+                    button.addEventListener(
+                        "click",
+                        buttonInfo.action
+                    );
+
+                    actionCell.appendChild(button);
+
+                });
+
+                tr.appendChild(actionCell);
+
+            }
+
+            tbody.appendChild(tr);
+
+        });
+
+}
+
+/* GENERAL REMARKS */
+
+async function saveNote() {
+
+    if (currentRole !== "ADMIN") return;
+
+    savedNote = el("note").value;
+
+    try {
+
+        await setDoc(
+            doc(db, "settings", "generalNote"),
+            {
+                text: savedNote
+            }
+        );
+
+        alert("General Remarks Saved to Firebase!");
+
+    } catch (error) {
+
+        alert("Save failed: " + error.message);
+
+    }
+
+}
+
+function renderNote() {
+
+    el("noteView").textContent = savedNote;
+
+    el("note").value = savedNote;
+
+}
+
+/* GRAPH */
+
+function updateGraph() {
+
+    if (!el("yearSelect").value) return;
+
+    const period = el("period").value;
+
+    const selectedYear =
+        Number(el("yearSelect").value);
+
+    const selectedMonth =
+        Number(el("monthSelect").value);
+
+    el("monthSelect").disabled =
+        period !== "daily";
+
+    el("yearSelect").disabled =
+        period === "yearly";
+
+    let labels = [];
+    let mwhValues = [];
+    let waterValues = [];
+
+    /* DAILY */
+
+    if (period === "daily") {
+
+        const daysInMonth = new Date(
+            selectedYear,
+            selectedMonth,
+            0
+        ).getDate();
+
+        for (
+            let day = 1;
+            day <= daysInMonth;
+            day++
+        ) {
+
+            const dateKey =
+                `${selectedYear}-${String(selectedMonth).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+            labels.push(String(day));
+
+            const record = data.find(
+                item => item.date === dateKey
+            );
+
+            mwhValues.push(
+                record ? record.mwh : null
+            );
+
+            waterValues.push(
+                record ? record.water : null
+            );
+
+        }
+
+        el("periodInfo").textContent =
+            `DAILY GRAPH: ${selectedYear} / ${selectedMonth} - ${daysInMonth} DAYS`;
+
+    }
+
+    /* MONTHLY */
+
+    else if (period === "monthly") {
+
+        const monthNames = [
+            "January", "February", "March",
+            "April", "May", "June",
+            "July", "August", "September",
+            "October", "November", "December"
+        ];
+
+        for (let month = 1; month <= 12; month++) {
+
+            labels.push(monthNames[month - 1]);
+
+            const records = data.filter(item =>
+                Number(item.date.substring(0, 4)) === selectedYear &&
+                Number(item.date.substring(5, 7)) === month
+            );
+
+            const totalMwh = records.reduce(
+                (sum, item) => sum + Number(item.mwh),
+                0
+            );
+
+            const averageWater = records.length
+                ? records.reduce(
+                    (sum, item) => sum + Number(item.water),
+                    0
+                  ) / records.length
+                : null;
+
+            mwhValues.push(
+                records.length ? totalMwh : null
+            );
+
+            waterValues.push(averageWater);
+
+        }
+
+        el("periodInfo").textContent =
+            `MONTHLY GRAPH: ${selectedYear}`;
+
+    }
+
+    /* YEARLY */
+
+    else {
+
+        const years = [
+            ...new Set(
+                data.map(item =>
+                    Number(item.date.substring(0, 4))
+                )
+            )
+        ].sort((a, b) => a - b);
+
+        if (years.length === 0) {
+            years.push(new Date().getFullYear());
+        }
+
+        years.forEach(year => {
+
+            labels.push(String(year));
+
+            const records = data.filter(item =>
+                Number(item.date.substring(0, 4)) === year
+            );
+
+            const totalMwh = records.reduce(
+                (sum, item) => sum + Number(item.mwh),
+                0
+            );
+
+            const averageWater = records.length
+                ? records.reduce(
+                    (sum, item) => sum + Number(item.water),
+                    0
+                  ) / records.length
+                : null;
+
+            mwhValues.push(
+                records.length ? totalMwh : null
+            );
+
+            waterValues.push(averageWater);
+
+        });
+
+        el("periodInfo").textContent = "YEARLY GRAPH";
+
+    }
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    const ctx = el("graph").getContext("2d");
+
+    chart = new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [
+
+                {
+                    label: "MWh",
+                    data: mwhValues,
+                    yAxisID: "y",
+                    borderColor: "#00A8FF",
+                    backgroundColor: "rgba(0,168,255,0.15)",
+                    borderWidth: 3,
+                    tension: 0.35,
+                    pointRadius: 3,
+                    pointHoverRadius: 8,
+                    spanGaps: true
+                },
+
+                {
+                    label: "Water Level (m)",
+                    data: waterValues,
+                    yAxisID: "y1",
+                    borderColor: "#FF1744",
+                    backgroundColor: "rgba(255,23,68,0.12)",
+                    borderWidth: 3,
+                    tension: 0.35,
+                    pointRadius: 3,
+                    pointHoverRadius: 8,
+                    spanGaps: true
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+            maintainAspectRatio: false,
+
+            interaction: {
+                mode: "index",
+                intersect: false
+            },
+
+            plugins: {
+
+                legend: {
+                    labels: {
+                        color: "white",
+                        font: {
+                            size: 13,
+                            weight: "bold"
+                        }
+                    }
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    position: "bottom",
+
+                    title: {
+                        display: true,
+                        text: period === "daily"
+                            ? "DATE (1 - END OF MONTH)"
+                            : period === "monthly"
+                                ? "MONTH"
+                                : "YEAR",
+                        color: "#39FF14",
+                        font: {
+                            size: 14,
+                            weight: "bold"
+                        }
+                    },
+
+                    ticks: {
+                        color: "#FFFFFF",
+                        autoSkip: false,
+                        maxRotation: 60,
+                        minRotation: 45
+                    },
+
+                    grid: {
+                        display: true,
+                        color: "#39FF14",
+                        lineWidth: 1
+                    },
+
+                    border: {
+                        color: "#39FF14",
+                        width: 2
+                    }
+
+                },
+
+                y: {
+
+                    type: "linear",
+                    position: "left",
+
+                    title: {
+                        display: true,
+                        text: "MWh",
+                        color: "#00A8FF"
+                    },
+
+                    ticks: {
+                        color: "#00A8FF"
+                    },
+
+                    grid: {
+                        display: true,
+                        color: "rgba(57,255,20,0.45)",
+                        lineWidth: 1
+                    },
+
+                    border: {
+                        color: "#39FF14",
+                        width: 2
+                    }
+
+                },
+
+                y1: {
+
+                    type: "linear",
+                    position: "right",
+
+                    title: {
+                        display: true,
+                        text: "WATER LEVEL (m)",
+                        color: "#FF1744"
+                    },
+
+                    ticks: {
+                        color: "#FF1744"
+                    },
+
+                    grid: {
+                        drawOnChartArea: false
+                    },
+
+                    border: {
+                        color: "#39FF14",
+                        width: 2
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+/* EXPORT BACKUP */
+
+async function exportBackup() {
+
+    if (currentRole !== "ADMIN") return;
+
+    try {
+
+        const recordsSnapshot =
+            await getDocs(collection(db, "records"));
+
+        const records = recordsSnapshot.docs.map(
+            document => ({
+                ...document.data(),
+                date: document.id
+            })
+        );
+
+        const noteSnapshot = await getDoc(
+            doc(db, "settings", "generalNote")
+        );
+
+        const note = noteSnapshot.exists()
+            ? noteSnapshot.data().text || ""
+            : "";
+
+        const backup = {
+
+            app: "KANYIN HYDROPOWER",
+
+            backupDate: new Date().toISOString(),
+
+            kanyinData: records,
+
+            kanyinNote: note
+
+        };
+
+        const blob = new Blob(
+            [JSON.stringify(backup, null, 2)],
+            { type: "application/json" }
+        );
+
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+
+        link.href = url;
+
+        link.download =
+            "KANYIN_BACKUP_" +
+            new Date().toISOString().slice(0, 10) +
+            ".json";
+
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+        el("backupStatus").textContent =
+            "Backup exported successfully.";
+
+    } catch (error) {
+
+        alert("Backup failed: " + error.message);
+
+    }
+
+}
+
+/* VALIDATE BACKUP RECORDS */
+
+function validateRecords(records) {
+
+    if (!Array.isArray(records)) {
+        throw new Error("Backup records are not valid.");
+    }
+
+    return records.map(item => {
+
+        const date = String(item.date || "");
+
+        const mwh = Number(item.mwh);
+        const water = Number(item.water);
+
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+            throw new Error("Invalid date: " + date);
+        }
+
+        if (
+            item.mwh === "" ||
+            item.water === "" ||
+            !Number.isFinite(mwh) ||
+            !Number.isFinite(water) ||
+            mwh < 0 ||
+            water < 0
+        ) {
+            throw new Error("Invalid data for " + date);
+        }
+
+        return {
+
+            date,
+            mwh,
+            water,
+
+            remark: String(item.remark || "")
+
+        };
+
+    });
+
+}
+
+/* IMPORT RECORDS INTO FIREBASE */
+
+async function writeRecordsToFirebase(records) {
+
+    const validRecords = validateRecords(records);
+
+    // Firestore batch limit is 500 writes.
+    // Use 400 per batch for a safety margin.
+
+    for (
+        let start = 0;
+        start < validRecords.length;
+        start += 400
+    ) {
+
+        const batch = writeBatch(db);
+
+        const part = validRecords.slice(
+            start,
+            start + 400
+        );
+
+        part.forEach(item => {
+
+            const reference = doc(
+                db,
+                "records",
+                item.date
+            );
+
+            batch.set(reference, item);
+
+        });
+
+        await batch.commit();
+
+    }
+
+}
+
+/* IMPORT BACKUP FILE */
+
+async function importBackup(event) {
+
+    if (currentRole !== "ADMIN") return;
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    try {
+
+        const text = await file.text();
+
+        const backup = JSON.parse(text);
+
+        const records = validateRecords(
+            backup.kanyinData
+        );
+
+        const note =
+            typeof backup.kanyinNote === "string"
+                ? backup.kanyinNote
+                : "";
+
+        if (!confirm(
+            "Import " + records.length +
+            " records into Firebase?\n\n" +
+            "Records with the same date will be overwritten."
+        )) {
+            event.target.value = "";
+            return;
+        }
+
+        el("backupStatus").textContent =
+            "Importing backup...";
+
+        await writeRecordsToFirebase(records);
+
+        await setDoc(
+            doc(db, "settings", "generalNote"),
+            { text: note }
+        );
+
+        el("backupStatus").textContent =
+            "Backup imported successfully!";
+
+        alert("Backup Import Completed!");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Import failed: " + error.message);
+
+        el("backupStatus").textContent =
+            "Import failed.";
+
+    }
+
+    event.target.value = "";
+
+}
+
+/* IMPORT OLD LOCAL BROWSER DATA */
+
+async function importLocalData() {
+
+    if (currentRole !== "ADMIN") return;
+
+    let oldRecords = [];
+
+    let oldNote = "";
+
+    try {
+
+        oldRecords = JSON.parse(
+            localStorage.getItem("kanyinData") || "[]"
+        );
+
+        oldNote =
+            localStorage.getItem("kanyinNote") || "";
+
+        const records = validateRecords(oldRecords);
+
+        if (
+            records.length === 0 &&
+            !oldNote
+        ) {
+
+            alert(
+                "No old browser data was found."
+            );
+
+            return;
+
+        }
+
+        if (!confirm(
+            "Import " + records.length +
+            " old browser records into Firebase?\n\n" +
+            "Existing Firebase records with the same date will be overwritten."
+        )) {
+            return;
+        }
+
+        el("backupStatus").textContent =
+            "Importing old browser data...";
+
+        await writeRecordsToFirebase(records);
+
+        await setDoc(
+            doc(db, "settings", "generalNote"),
+            { text: oldNote }
+        );
+
+        el("backupStatus").textContent =
+            "Old browser data imported successfully.";
+
+        alert(
+            "Old Browser Data Import Completed!"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Old data import failed: " + error.message
+        );
+
+        el("backupStatus").textContent =
+            "Import failed.";
+
+    }
+
+}
+
+/* EXPOSE FUNCTIONS TO HTML */
+
+window.login = login;
+window.logout = logout;
+
+window.saveData = saveData;
+window.saveNote = saveNote;
+
+window.editData = editData;
+window.editDailyRemark = editDailyRemark;
+window.deleteDailyRemark = deleteDailyRemark;
+window.deleteData = deleteData;
+
+window.updateGraph = updateGraph;
+
+window.exportBackup = exportBackup;
+window.importBackup = importBackup;
+window.importLocalData = importLocalData;
+
+</script>
+
+</body>
+</html>
